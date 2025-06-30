@@ -280,18 +280,18 @@ def semantic(ast):
                 for arg_expr in args:
                     evaluate_expression_with_usage(arg_expr, symbol_table)
 
-        elif len(expr) == 3 and expr[0] == 'CAST':
-            _, _, subexpr = expr
-            evaluate_expression_with_usage(subexpr, symbol_table)
-
-        elif len(expr) == 2 and expr[0] == 'NOT':
-            _, subexpr = expr
-            evaluate_expression_with_usage(subexpr, symbol_table)
-
-        else:
-            # Operaciones binarias (op, left, right)
-            for subexpr in expr[1:]:
+            elif len(expr) == 3 and expr[0] == 'CAST':
+                _, _, subexpr = expr
                 evaluate_expression_with_usage(subexpr, symbol_table)
+
+            elif len(expr) == 2 and expr[0] == 'NOT':
+                _, subexpr = expr
+                evaluate_expression_with_usage(subexpr, symbol_table)
+
+            else:
+                # Operaciones binarias (op, left, right)
+                for subexpr in expr[1:]:
+                    evaluate_expression_with_usage(subexpr, symbol_table)
 
     def process_block(block):
         for node in block:
@@ -321,16 +321,18 @@ def semantic(ast):
 
                 if rest:
                     expr = rest[0]
+                    # IMPORTANTE: evaluar uso ANTES de marcar como inicializada
+                    evaluate_expression_with_usage(expr, symbol_table)
+                    
                     expr_type = evaluate_expression(expr, symbol_table)
                     if expr_type != var_type:
                         raise SyntaxError(
                             f"Asignación incompatible para '{var_name}': "
                             f"esperado {var_type}, obtenido {expr_type}"
                         )
-                    #MARCA en el ámbito correcto ANTES de evaluar usage:
+                    # Ahora sí marcar como inicializada
                     symbol_table[current][var_name]['used'] = True
                     symbol_table[current][var_name]['initialized'] = True
-                    evaluate_expression_with_usage(expr, symbol_table)
                         
             elif node_type == 'ASSIGNMENT':
                 _, var_name, expr = node

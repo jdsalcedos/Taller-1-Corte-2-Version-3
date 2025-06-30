@@ -19,7 +19,7 @@ def test_lexical_errors():
     """
     Casos que deben fallar en el análisis léxico
     """
-    print("🔍 PRUEBAS DE ERRORES LÉXICOS")
+    print("PRUEBAS DE ERRORES LÉXICOS")
     print("=" * 60)
     
     casos_lexicos = [
@@ -51,15 +51,15 @@ def test_lexical_errors():
         
         try:
             tokens = lexer(caso["codigo"])
-            print(f"❌ FALLO: Se esperaba error léxico pero se generaron {len(tokens)} tokens")
+            print(f"FALLO: Se esperaba error léxico pero se generaron {len(tokens)} tokens")
         except Exception as e:
-            print(f"✅ ÉXITO: Error léxico detectado - {e}")
+            print(f"ÉXITO: Error léxico detectado - {e}")
 
 def test_syntax_errors():
     """
     Casos que deben fallar en el análisis sintáctico
     """
-    print(f"\n🌳 PRUEBAS DE ERRORES SINTÁCTICOS")
+    print(f"\nPRUEBAS DE ERRORES SINTÁCTICOS")
     print("=" * 60)
     
     casos_sintacticos = [
@@ -120,15 +120,15 @@ def test_syntax_errors():
         try:
             tokens = lexer(caso["codigo"])
             ast = parser(tokens)
-            print(f"❌ FALLO: Se esperaba error sintáctico pero se generó AST")
+            print(f"FALLO: Se esperaba error sintáctico pero se generó AST")
         except Exception as e:
-            print(f"✅ ÉXITO: Error sintáctico detectado - {str(e)[:80]}...")
+            print(f"ÉXITO: Error sintáctico detectado - {str(e)[:80]}...")
 
 def test_semantic_errors():
     """
     Casos que deben fallar en el análisis semántico
     """
-    print(f"\n🧠 PRUEBAS DE ERRORES SEMÁNTICOS")
+    print(f"\nPRUEBAS DE ERRORES SEMÁNTICOS")
     print("=" * 60)
     
     casos_semanticos = [
@@ -194,9 +194,9 @@ def test_semantic_errors():
             tokens = lexer(caso["codigo"])
             ast = parser(tokens)
             symbol_table = semantic(ast)
-            print(f"❌ FALLO: Se esperaba error semántico pero pasó el análisis")
+            print(f"FALLO: Se esperaba error semántico pero pasó el análisis")
         except Exception as e:
-            print(f"✅ ÉXITO: Error semántico detectado - {str(e)[:80]}...")
+            print(f"ÉXITO: Error semántico detectado - {str(e)[:80]}...")
 
 def test_type_compatibility():
     """
@@ -252,21 +252,21 @@ def test_type_compatibility():
             symbol_table = semantic(ast)
             
             if caso["esperado"] == "fallo":
-                print(f"⚠️  INESPERADO: Se esperaba fallo pero pasó")
+                print(f"ADVERTENCIA: INESPERADO: Se esperaba fallo pero pasó")
             else:
-                print(f"✅ ÉXITO: Pasó como se esperaba")
+                print(f"ÉXITO: Pasó como se esperaba")
                 
         except Exception as e:
             if caso["esperado"] == "fallo":
-                print(f"✅ ÉXITO: Falló como se esperaba - {str(e)[:60]}...")
+                print(f"ÉXITO: Falló como se esperaba - {str(e)[:60]}...")
             else:
-                print(f"❌ INESPERADO: Se esperaba éxito pero falló - {str(e)[:60]}...")
+                print(f"ERROR: INESPERADO: Se esperaba éxito pero falló - {str(e)[:60]}...")
 
 def test_scope_errors():
     """
     Casos específicos de errores de scope
     """
-    print(f"\n🎯 PRUEBAS DE ERRORES DE SCOPE")
+    print(f"\nPRUEBAS DE ERRORES DE SCOPE")
     print("=" * 60)
     
     casos_scope = [
@@ -314,15 +314,15 @@ def test_scope_errors():
             tokens = lexer(caso["codigo"])
             ast = parser(tokens)
             symbol_table = semantic(ast)
-            print(f"⚠️  INESPERADO: Se esperaba error de scope pero pasó")
+            print(f"ADVERTENCIA: INESPERADO: Se esperaba error de scope pero pasó")
         except Exception as e:
-            print(f"✅ ÉXITO: Error de scope detectado - {str(e)[:80]}...")
+            print(f"ÉXITO: Error de scope detectado - {str(e)[:80]}...")
 
 def test_malformed_expressions():
     """
     Expresiones malformadas que deben fallar
     """
-    print(f"\n🔧 PRUEBAS DE EXPRESIONES MALFORMADAS")
+    print(f"\nPRUEBAS DE EXPRESIONES MALFORMADAS")
     print("=" * 60)
     
     expresiones_malas = [
@@ -349,9 +349,9 @@ def test_malformed_expressions():
         try:
             tokens = lexer(codigo)
             ast = parser(tokens)
-            print(f"❌ FALLO: Expresión malformada no detectada")
+            print(f"FALLO: Expresión malformada no detectada")
         except Exception as e:
-            print(f"✅ ÉXITO: Error detectado - {str(e)[:60]}...")
+            print(f"ÉXITO: Error detectado - {str(e)[:60]}...")
 
 if __name__ == "__main__":
     print("🚨 SUITE DE PRUEBAS DE ERRORES Y CASOS LÍMITE 🚨")
