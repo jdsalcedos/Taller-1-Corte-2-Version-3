@@ -202,7 +202,7 @@ def test_type_compatibility():
     """
     Casos específicos de compatibilidad de tipos
     """
-    print(f"\n🔢 PRUEBAS DE COMPATIBILIDAD DE TIPOS")
+    print(f"\nPRUEBAS DE COMPATIBILIDAD DE TIPOS")
     print("=" * 60)
     
     casos_tipos = [
@@ -354,7 +354,7 @@ def test_malformed_expressions():
             print(f"ÉXITO: Error detectado - {str(e)[:60]}...")
 
 if __name__ == "__main__":
-    print("🚨 SUITE DE PRUEBAS DE ERRORES Y CASOS LÍMITE 🚨")
+    print("SUITE DE PRUEBAS DE ERRORES Y CASOS LÍMITE")
     print("=" * 80)
     print("Esta suite verifica que el compilador detecte correctamente los errores")
     print("=" * 80)
@@ -367,7 +367,7 @@ if __name__ == "__main__":
     test_malformed_expressions()
     
     print(f"\n{'='*80}")
-    print("🎊 SUITE DE PRUEBAS DE ERRORES COMPLETADA 🎊")
+    print("SUITE DE PRUEBAS DE ERRORES COMPLETADA")
     print("Todos los casos de arriba DEBERÍAN haber fallado.")
     print("Si alguno pasó inesperadamente, revisa la implementación.")
     print("=" * 80)

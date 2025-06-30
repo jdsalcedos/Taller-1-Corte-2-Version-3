@@ -28,56 +28,56 @@ def compilar(codigo):
     Raises:
         Exception: Si hay errores en cualquier fase
     """
-    print("🚀 INICIANDO COMPILACIÓN")
+    print("INICIANDO COMPILACIÓN")
     print("=" * 50)
-    print(f"📝 Código fuente: {codigo}")
+    print(f"Código fuente: {codigo}")
     print()
     
     try:
         # Fase 1: Análisis Léxico
-        print("🔍 FASE 1: Análisis Léxico")
+        print("FASE 1: Análisis Léxico")
         tokens = lexer(codigo)
-        print(f"   ✅ {len(tokens)} tokens generados")
-        print(f"   📝 Tokens: {tokens}")
+        print(f"   {len(tokens)} tokens generados")
+        print(f"   Tokens: {tokens}")
         print()
         
         # Fase 2: Análisis Sintáctico
-        print("🌳 FASE 2: Análisis Sintáctico")
+        print("FASE 2: Análisis Sintáctico")
         ast = parser(tokens)
-        print(f"   ✅ AST generado correctamente")
-        print(f"   📝 AST: {ast}")
+        print(f"   AST generado correctamente")
+        print(f"   AST: {ast}")
         print()
         
         # Fase 3: Análisis Semántico
-        print("🧠 FASE 3: Análisis Semántico")
+        print("FASE 3: Análisis Semántico")
         symbol_table = semantic(ast)
-        print(f"   ✅ Análisis semántico exitoso")
+        print(f"   Análisis semántico exitoso")
         print()
         
         # Fase 4: Generación de Código Intermedio
-        print("⚙️  FASE 4: Generación de Código Intermedio")
+        print("FASE 4: Generación de Código Intermedio")
         generator = CodeGenerator()
         cuadruplas = generator.generate(ast)
-        print(f"   ✅ {len(cuadruplas)} cuádruplas generadas")
+        print(f"   {len(cuadruplas)} cuádruplas generadas")
         print()
         
-        print("📊 CUÁDRUPLAS RESULTANTES:")
+        print("CUÁDRUPLAS RESULTANTES:")
         print("-" * 50)
         for i, cuadrupla in enumerate(cuadruplas, 1):
             print(f"   {i:2d}: {cuadrupla}")
         
-        print(f"\n✅ COMPILACIÓN EXITOSA")
+        print(f"\nCOMPILACIÓN EXITOSA")
         return cuadruplas
         
     except Exception as e:
-        print(f"❌ ERROR EN COMPILACIÓN: {e}")
+        print(f"ERROR EN COMPILACIÓN: {e}")
         raise
 
 def main():
     """
     Función principal con ejemplos de uso
     """
-    print("🔥 COMPILADOR SIMPLE - DEMO")
+    print("COMPILADOR SIMPLE - DEMO")
     print("=" * 60)
     
     # Ejemplos de código a compilar
@@ -96,9 +96,9 @@ def main():
         
         try:
             cuadruplas = compilar(ejemplo)
-            print(f"✅ Ejemplo {i} compilado exitosamente")
+            print(f"Ejemplo {i} compilado exitosamente")
         except Exception as e:
-            print(f"❌ Error en ejemplo {i}: {e}")
+            print(f"Error en ejemplo {i}: {e}")
         
         print()
 
@@ -106,12 +106,12 @@ if __name__ == "__main__":
     # Verificar si se pasó código como argumento
     if len(sys.argv) > 1:
         codigo_usuario = " ".join(sys.argv[1:])
-        print("🎯 COMPILANDO CÓDIGO DEL USUARIO")
+        print("COMPILANDO CÓDIGO DEL USUARIO")
         print("=" * 60)
         try:
             compilar(codigo_usuario)
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f"Error: {e}")
             sys.exit(1)
     else:
         main()
