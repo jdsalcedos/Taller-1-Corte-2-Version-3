@@ -169,13 +169,20 @@ def check_function_call(name, arg_types, symbol_table):
 # Estructuras globales para gestión de ámbitos
 scope_stack = []  # Pila para rastrear los ámbitos activos
 symbol_table = {}  # Tabla de símbolos por ámbito y funciones
+scope_counter = 0  # Contador para generar nombres únicos de ámbitos
 
 # Funciones para manejar ámbitos
 def enter_scope(name):
     """Entra en un nuevo ámbito: push y crea entrada en symbol_table."""
-    scope_stack.append(name)
-    if name not in symbol_table:
-        symbol_table[name] = {}
+    global scope_counter
+    if name.startswith("block_"):
+        scope_counter += 1
+        unique_name = f"block_{scope_counter}"
+    else:
+        unique_name = name
+    scope_stack.append(unique_name)
+    if unique_name not in symbol_table:
+        symbol_table[unique_name] = {}
 
 def exit_scope():
     """Sale del ámbito actual."""
@@ -221,10 +228,11 @@ def semantic(ast):
     """
 
     # Inicialización global
-    # Inicialización global
+    global scope_counter
     symbol_table.clear()
     symbol_table["functions"] = {}
     scope_stack.clear()
+    scope_counter = 0  # Reiniciar contador de ámbitos
     enter_scope("global")
 
     def mark_used(var_name):
@@ -370,6 +378,17 @@ def semantic(ast):
                 process_block(then_block)
                 if else_block:
                     process_block(else_block[0])
+                    
+            elif node_type == 'IF_ELSE':
+                _, cond_expr, then_block, else_block = node
+                cond_type = evaluate_expression(cond_expr, symbol_table)
+                evaluate_expression_with_usage(cond_expr, symbol_table)
+                if cond_type != 'bool':
+                    raise SyntaxError(
+                        f"Condición inválida en 'if-else': se esperaba 'bool' pero se obtuvo '{cond_type}'"
+                    )
+                process_block(then_block)
+                process_block(else_block)
 
             elif node_type == 'WHILE':
                 _, cond_expr, body = node

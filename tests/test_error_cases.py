@@ -353,6 +353,50 @@ def test_malformed_expressions():
         except Exception as e:
             print(f"ÉXITO: Error detectado - {str(e)[:60]}...")
 
+def test_if_else_errors():
+    """
+    Casos específicos que deben fallar en estructuras if-else
+    """
+    print(f"\nPRUEBAS DE ERRORES EN IF-ELSE")
+    print("=" * 60)
+    
+    casos_if_else = [
+        {
+            "codigo": "int x = 5; if (x) { int y = 1; } else { int y = 0; }",
+            "descripcion": "Error: condición no booleana (int en lugar de bool)"
+        },
+        {
+            "codigo": "if (true) { int z = 1; } else { int z = 0; }",
+            "descripcion": "Error: if sin declarar variable en condición"
+        },
+        {
+            "codigo": "bool test = true; if (test) { int y = 1; } else { y = 0; }",
+            "descripcion": "Error: variable 'y' usada sin declarar en bloque else"
+        },
+        {
+            "codigo": "int x = 5; if x > 3 { int y = 1; }",
+            "descripcion": "Error: paréntesis faltantes en condición if"
+        },
+        {
+            "codigo": "bool test = true; if (test) int y = 1; } else { int y = 0; }",
+            "descripcion": "Error: llaves faltantes en bloque if"
+        }
+    ]
+    
+    for i, caso in enumerate(casos_if_else, 1):
+        print(f"\nERROR IF-ELSE {i}: {caso['descripcion']}")
+        print(f"Código: {caso['codigo']}")
+        
+        try:
+            tokens = lexer(caso["codigo"])
+            ast = parser(tokens)
+            semantic(ast)
+            generator = CodeGenerator()
+            cuadruplas = generator.generate(ast)
+            print(f"FALLO: Se esperaba error pero se generaron {len(cuadruplas)} cuádruplas")
+        except Exception as e:
+            print(f"ÉXITO: Error detectado - {str(e)[:80]}...")
+
 if __name__ == "__main__":
     print("SUITE DE PRUEBAS DE ERRORES Y CASOS LÍMITE")
     print("=" * 80)
@@ -365,6 +409,7 @@ if __name__ == "__main__":
     test_type_compatibility()
     test_scope_errors()
     test_malformed_expressions()
+    test_if_else_errors()
     
     print(f"\n{'='*80}")
     print("SUITE DE PRUEBAS DE ERRORES COMPLETADA")

@@ -109,7 +109,7 @@ def parse_assignment(tokens):
     # Retornar la estructura de la asignación
     return ('ASSIGNMENT', ident, expr)
 
-# Función para procesar una estructura condicional 'if'
+# Función para procesar una estructura condicional 'if' con soporte para 'else'
 def parse_if(tokens):
     # Verificamos si el primer token es la palabra clave 'if'
     expect_keyword(tokens, 'if')
@@ -129,10 +129,11 @@ def parse_if(tokens):
     # Espera la llave de apertura '{'
     expect(tokens, 'LBRACE')
 
-    block = []
-    # Procesar sentencias dentro del bloque
+    then_block = [('BLOCK_ENTER',)]  # Marcar entrada al bloque then
+    # Procesar sentencias dentro del bloque if
     while tokens and not match(tokens, 'RBRACE'):
-        block.append(parse_statement(tokens))
+        then_block.append(parse_statement(tokens))
+    then_block.append(('BLOCK_EXIT',))  # Marcar salida del bloque then
 
     # Si no hemos encontrado la llave de cierre 'RBRACE' y ya no quedan tokens, lanzar error
     if not match(tokens, 'RBRACE'):
@@ -141,8 +142,32 @@ def parse_if(tokens):
     # Consumir la llave de cierre 'RBRACE'
     tokens.pop(0)
 
-    # Retorna la estructura del bloque 'if' con su condición y bloque de sentencias
-    return ('IF', cond, block)
+    # Verificar si hay un 'else'
+    else_block = None
+    if tokens and match_keyword(tokens, 'else'):
+        tokens.pop(0)  # Consume 'else'
+        
+        # Espera la llave de apertura '{'
+        expect(tokens, 'LBRACE')
+        
+        else_block = [('BLOCK_ENTER',)]  # Marcar entrada al bloque else
+        # Procesar sentencias dentro del bloque else
+        while tokens and not match(tokens, 'RBRACE'):
+            else_block.append(parse_statement(tokens))
+        else_block.append(('BLOCK_EXIT',))  # Marcar salida del bloque else
+        
+        # Si no hemos encontrado la llave de cierre 'RBRACE' y ya no quedan tokens, lanzar error
+        if not match(tokens, 'RBRACE'):
+            raise SyntaxError(f"Error en línea {if_line}, columna {if_col}: falta '}}' de cierre en el bloque 'else'")
+        
+        # Consumir la llave de cierre 'RBRACE'
+        tokens.pop(0)
+
+    # Retorna la estructura del bloque 'if' con su condición, bloque then y bloque else (si existe)
+    if else_block is not None:
+        return ('IF_ELSE', cond, then_block, else_block)
+    else:
+        return ('IF', cond, then_block)
 
 # Función para procesar expresiones, que son comparaciones o operaciones
 def parse_expression(tokens):
@@ -153,8 +178,8 @@ def parse_comparison(tokens):
     # Primero procesamos las operaciones de adición y sustracción
     left = parse_add_sub(tokens)
 
-    # Mientras encontremos un operador de comparación ('>', '<', '==')
-    while match(tokens, 'GREATER') or match(tokens, 'LESS') or match(tokens, 'EQUALS'):
+    # Mientras encontremos un operador de comparación ('>', '<', '==', '>=', '<=')
+    while match(tokens, 'GREATER') or match(tokens, 'LESS') or match(tokens, 'EQUALS') or match(tokens, 'GREATEREQUAL') or match(tokens, 'LESSEQUAL'):
         _, op, _, _ = tokens.pop(0)  # Consumimos el operador de comparación
         # Procesamos la expresión de la derecha de la comparación
         right = parse_add_sub(tokens)

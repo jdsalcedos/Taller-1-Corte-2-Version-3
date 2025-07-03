@@ -51,8 +51,42 @@ def test_code_generation():
         },
 
         
-        # CASOS DE ESTRUCTURAS DE CONTROL
-
+        # CASOS DE ESTRUCTURAS DE CONTROL - IF/ELSE
+        {
+            "codigo": "int x = 10; if (x > 5) { int y = 1; } else { int y = 0; }",
+            "descripcion": "If-else básico con declaraciones en cada bloque",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "bool test = true; if (test) { int result = 100; } else { int result = 200; }",
+            "descripcion": "If-else con condición booleana directa",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "int a = 5; int b = 10; if (a < b) { a = a + 1; } else { b = b - 1; }",
+            "descripcion": "If-else con asignaciones modificando variables externas",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "float f = 3.14; if (f > 3.0) { f = f * 2.0; } else { f = f / 2.0; }",
+            "descripcion": "If-else con números flotantes",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "int x = 7; if (x == 7) { bool found = true; } else { bool found = false; }",
+            "descripcion": "If-else con operador de igualdad",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "int num = 15; if (num >= 10) { int categoria = 1; } else { int categoria = 2; }",
+            "descripcion": "If-else con operador mayor o igual",
+            "esperado": "éxito"
+        },
+        {
+            "codigo": "int x = 10; if (x > 5) { int y = 1; }",
+            "descripcion": "If simple sin else",
+            "esperado": "éxito"
+        },
         
         # CASOS DE TIPOS MIXTOS
         {

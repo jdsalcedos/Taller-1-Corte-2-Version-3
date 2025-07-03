@@ -205,6 +205,37 @@ class CodeGenerator:
             # Etiqueta de fin
             self.emit(end_label, 'label', None, None)
             
+        elif stmt_type == 'IF_ELSE':
+            # Estructura condicional: ('IF_ELSE', condición, bloque_then, bloque_else)
+            _, condition, then_block, else_block = stmt
+            
+            # Generar código para la condición
+            cond_temp = self.generate_expression(condition)
+            
+            # Generar etiquetas
+            else_label = self.new_label()
+            end_label = self.new_label()
+            
+            # Salto condicional al else
+            self.emit(None, 'if_false', cond_temp, else_label)
+            
+            # Generar código del bloque then
+            for stmt in then_block:
+                self.generate_statement(stmt)
+            
+            # Salto al final (saltando el else)
+            self.emit(None, 'goto', end_label, None)
+            
+            # Etiqueta del else
+            self.emit(else_label, 'label', None, None)
+            
+            # Generar código del bloque else
+            for stmt in else_block:
+                self.generate_statement(stmt)
+            
+            # Etiqueta de fin
+            self.emit(end_label, 'label', None, None)
+            
         elif stmt_type == 'WHILE':
             # Bucle while: ('WHILE', condición, bloque)
             _, condition, body_block = stmt
@@ -244,6 +275,14 @@ class CodeGenerator:
         elif stmt_type == 'FUNC_CALL':
             # Llamada a función como sentencia
             self.generate_expression(stmt)
+            
+        elif stmt_type == 'BLOCK_ENTER':
+            # Marca de entrada de bloque - ignorar en generación de código
+            pass
+            
+        elif stmt_type == 'BLOCK_EXIT':
+            # Marca de salida de bloque - ignorar en generación de código
+            pass
             
         else:
             raise ValueError(f"Tipo de sentencia no reconocido: {stmt_type}")
