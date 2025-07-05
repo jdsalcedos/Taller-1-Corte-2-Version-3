@@ -15,6 +15,8 @@ from src.lexico.lexer import lexer
 from src.sintactico.parser import parser
 from src.semantico.semantic import semantic
 from src.generador.code_generator import CodeGenerator
+from src.CodigoObjeto.codigob import CodeGeneratorob
+from src.VM.virtualmachine import VirtualMachine
 
 def test_code_generation():
     """
@@ -204,6 +206,41 @@ def test_code_generation():
             for j, quad in enumerate(codigo_intermedio):
                 print(f"   {j+1:2}: {quad}")
             
+            # Fase 5: Generación de Código Objeto (Ensamblador)
+            print("\nFASE 5: Generación de Código Objeto (Ensamblador)")
+            object_generator = CodeGeneratorob() # Instantiate the new object code generator
+            object_generator.generate_code(codigo_intermedio) # Pass the quadruples
+            assembly_code =object_generator.get_code()
+
+            print(f"ÉXITO: Código objeto (ensamblador) generado:")
+            print("\nCódigo ensamblador:")
+            print(assembly_code) # Print the generated assembly code
+
+             # Fase 6: Ejecución del Código Objeto en la Máquina Virtual
+            print("\nFASE 6: Ejecución en la Máquina Virtual")
+            vm = VirtualMachine()
+            try:
+                vm.load_program(assembly_code)
+                print("Iniciando ejecución de MV...")
+                vm.run()
+                print("ÉXITO: Ejecución de MV completada.")
+
+                # Opcional: inspeccionar el estado final de la MV
+                final_stack_top = vm.get_final_stack_top()
+                final_memory_state = vm.get_memory_state()
+
+                print(f"  Estado final de la pila (cima): {final_stack_top}")
+                print(f"  Estado final de memoria: {final_memory_state}")
+
+        
+
+            except Exception as vm_e:
+                print(f"ERROR: Fallo durante la ejecución de la MV: {vm_e}")
+                # Si la MV falla, y el caso esperaba éxito en compilación, es un fallo inesperado
+                if ejemplo["esperado"] == "éxito":
+                    raise # Relanzar para que el try-except principal lo capture como fallo
+                # Si el caso ya esperaba un fallo (sintáctico/semántico), no es un fallo adicional
+            
             # Verificar si el resultado coincide con lo esperado
             if ejemplo["esperado"] == "éxito":
                 exitosos += 1
@@ -274,6 +311,31 @@ def test_specific_example():
             print(f"  {quad}")
         
         print(f"\n¡Código intermedio generado correctamente!")
+
+        object_generator = CodeGeneratorob()
+        object_generator.generate_code(codigo_intermedio)
+        assembly_code = object_generator.get_code()
+
+
+        vm = VirtualMachine()
+        try:
+                vm.load_program(assembly_code)
+                print("Iniciando ejecución de MV...")
+                vm.run()
+                print("ÉXITO: Ejecución de MV completada.")
+
+                # Opcional: inspeccionar el estado final de la MV
+                final_stack_top = vm.get_final_stack_top()
+                final_memory_state = vm.get_memory_state()
+
+                print(f"  Estado final de la pila (cima): {final_stack_top}")
+                print(f"  Estado final de memoria: {final_memory_state}")
+        except Exception as vm_e:
+                print(f"ERROR: Fallo durante la ejecución de la MV: {vm_e}")
+                
+        print(f"\nCódigo ensamblador generado:")
+        print(assembly_code)
+
         
     except Exception as e:
         print(f"Error: {e}")
@@ -323,6 +385,34 @@ def test_edge_cases():
                 generator = CodeGenerator()
                 codigo_intermedio = generator.generate(ast)
                 print(f"Éxito - {len(codigo_intermedio)} cuádruplas generadas")
+
+                object_generator = CodeGeneratorob()
+                object_generator.generate_code(codigo_intermedio)
+                assembly_code = object_generator.get_code()
+                print(f"Código ensamblador generado:\n{assembly_code}")
+
+                vm = VirtualMachine()
+                try:
+                    vm.load_program(assembly_code)
+                    print("Iniciando ejecución de MV...")
+                    vm.run()
+                    print("ÉXITO: Ejecución de MV completada.")
+
+                    # Opcional: inspeccionar el estado final de la MV
+                    final_stack_top = vm.get_final_stack_top()
+                    final_memory_state = vm.get_memory_state()
+
+                    print(f"  Estado final de la pila (cima): {final_stack_top}")
+                    print(f"  Estado final de memoria: {final_memory_state}")
+
+        
+
+                except Exception as vm_e:
+                    print(f"ERROR: Fallo durante la ejecución de la MV: {vm_e}")
+                
+                
+
+                
             else:
                 print("Código vacío - no se puede procesar")
         except Exception as e:
@@ -364,10 +454,6 @@ def test_comprehensive_cases():
             "descripcion": "Expresión con anidamiento extremo",
             "esperado": "éxito"
         },
-
-        
-        # CASOS DE ERRORES SEMÁNTICOS ESPECÍFICOS
-
         
         # CASOS DE ERRORES SINTÁCTICOS ESPECÍFICOS
         {
@@ -386,9 +472,7 @@ def test_comprehensive_cases():
             "esperado": "fallo"
         },
         
-        # CASOS DE FUNCIONES (SI SE SOPORTAN)
-
-        
+ 
         # CASOS DE TIPOS DE DATOS EXTREMOS
 
         {
@@ -440,6 +524,31 @@ def test_comprehensive_cases():
             if caso["esperado"] == "éxito":
                 exitosos += 1
                 print(f"ÉXITO ({len(codigo_intermedio)} cuádruplas)")
+                object_generator = CodeGeneratorob()
+                object_generator.generate_code(codigo_intermedio)
+                assembly_code = object_generator.get_code()
+                print(f"Código ensamblador generado:\n{assembly_code}")
+
+                vm = VirtualMachine()
+                try:
+                    vm.load_program(assembly_code)
+                    print("Iniciando ejecución de MV...")
+                    vm.run()
+                    print("ÉXITO: Ejecución de MV completada.")
+
+                    # Opcional: inspeccionar el estado final de la MV
+                    final_stack_top = vm.get_final_stack_top()
+                    final_memory_state = vm.get_memory_state()
+
+                    print(f"  Estado final de la pila (cima): {final_stack_top}")
+                    print(f"  Estado final de memoria: {final_memory_state}")
+
+        
+
+                except Exception as vm_e:
+                    print(f"ERROR: Fallo durante la ejecución de la MV: {vm_e}")
+                    # Si la MV falla, y el caso esperaba éxito en compilación, es un fallo inesperado
+                
             else:
                 inesperados += 1
                 print(f"ADVERTENCIA: ÉXITO INESPERADO ({len(codigo_intermedio)} cuádruplas)")
@@ -508,7 +617,29 @@ def test_stress_cases():
             semantic(ast)
             generator = CodeGenerator()
             codigo_intermedio = generator.generate(ast)
-            
+            object_generator = CodeGeneratorob()
+            object_generator.generate_code(codigo_intermedio)
+            assembly_code = object_generator.get_code()
+            vm = VirtualMachine()
+            try:
+                vm.load_program(assembly_code)
+                print("Iniciando ejecución de MV...")
+                vm.run()
+                print("ÉXITO: Ejecución de MV completada.")
+
+                # Opcional: inspeccionar el estado final de la MV
+                final_stack_top = vm.get_final_stack_top()
+                final_memory_state = vm.get_memory_state()
+
+                print(f"  Estado final de la pila (cima): {final_stack_top}")
+                print(f"  Estado final de memoria: {final_memory_state}")
+
+        
+
+            except Exception as vm_e:
+                print(f"ERROR: Fallo durante la ejecución de la MV: {vm_e}")
+                # Si la MV falla, y el caso esperaba éxito en compilación, es un fallo inesperado
+               
             fin = time.time()
             tiempo = fin - inicio
             
